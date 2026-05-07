@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cricket Quiz</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+    height:100vh;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+}
+
+.quiz-container{
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    border-radius:20px;
+    padding:30px;
+    width:90%;
+    max-width:500px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    text-align:center;
+    animation: fadeIn 1s ease;
+}
+
+h2{margin-bottom:20px}
+
+.option{
+    background: rgba(255,255,255,0.1);
+    margin:10px 0;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.option:hover{
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.03);
+}
+
+.correct{background:#4caf50 !important}
+.wrong{background:#e53935 !important}
+
+button{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:30px;
+    background: linear-gradient(45deg,#00c6ff,#0072ff);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.hide{display:none}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-container">
+    <h2 id="title">🏏 Cricket Quiz</h2>
+
+    <button id="startBtn">Start Quiz</button>
+
+    <div id="quizBox" class="hide">
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <button id="nextBtn">Next</button>
+    </div>
+
+    <h3 id="result" class="hide"></h3>
+</div>
+
+<script>
+const quiz = [
+    {q:"Who is known as the 'God of Cricket'?",options:["Virat Kohli","MS Dhoni","Sachin Tendulkar","Ricky Ponting"],answer:2},
+    {q:"How many players are there in a cricket team?",options:["9","10","11","12"],answer:2},
+    {q:"Which country won the 2011 Cricket World Cup?",options:["Australia","India","England","Pakistan"],answer:1},
+    {q:"What is the maximum number of overs in a T20 match?",options:["10","20","50","90"],answer:1},
+    {q:"Who is known as 'Captain Cool'?",options:["Rohit Sharma","Virat Kohli","MS Dhoni","Steve Smith"],answer:2},
+    {q:"What is 100 runs called?",options:["Century","Half-century","Double","Triple"],answer:0},
+    {q:"Ashes series is between?",options:["India & Pakistan","England & Australia","SA & NZ","WI & SL"],answer:1},
+    {q:"Balls in one over?",options:["5","6","7","8"],answer:1},
+    {q:"Highest ODI runs?",options:["Kohli","Ponting","Sachin","Lara"],answer:2},
+    {q:"Which format lasts 5 days?",options:["T20","ODI","Test","IPL"],answer:2}
+];
+
+let current=0,score=0,selected=null;
+
+const startBtn=document.getElementById("startBtn");
+const quizBox=document.getElementById("quizBox");
+const questionEl=document.getElementById("question");
+const optionsEl=document.getElementById("options");
+const nextBtn=document.getElementById("nextBtn");
+const resultEl=document.getElementById("result");
+
+startBtn.onclick=()=>{
+    startBtn.classList.add("hide");
+    quizBox.classList.remove("hide");
+    loadQuestion();
+}
+
+function loadQuestion(){
+    selected=null;
+    const q=quiz[current];
+    questionEl.innerText=q.q;
+    optionsEl.innerHTML="";
+
+    q.options.forEach((opt,i)=>{
+        const div=document.createElement("div");
+        div.classList.add("option");
+        div.innerText=opt;
+        div.onclick=()=>selectOption(div,i);
+        optionsEl.appendChild(div);
+    });
+}
+
+function selectOption(el,i){
+    if(selected!==null) return;
+    selected=i;
+
+    const options=document.querySelectorAll(".option");
+    const correct=quiz[current].answer;
+
+    options.forEach((opt,index)=>{
+        if(index===correct) opt.classList.add("correct");
+        if(index===selected && index!==correct) opt.classList.add("wrong");
+    });
+
+    if(i===correct) score++;
+}
+
+nextBtn.onclick=()=>{
+    if(selected===null){alert("Select an option!");return;}
+    current++;
+    if(current<quiz.length) loadQuestion();
+    else showResult();
+}
+
+function showResult(){
+    quizBox.classList.add("hide");
+    resultEl.classList.remove("hide");
+    resultEl.innerText=`🏆 Score: ${score}/${quiz.length}`;
+}
+</script>
+
+</body>
+</html>
